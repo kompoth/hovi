@@ -1,10 +1,10 @@
 # Hvts ov Insanity - Thy path to madness #
 HovI is a telegram bot designed to make it easier to find map tiles while
-playing *Mansions of Madness* tabletop game. It should be used with a simple
-indexing system: just attach small papers to tiles, like in some kind of a file
-cabinet, then add each tile to HovI database, marking it with a corresponding 
-number. When game app tells you to get a new tile, just send its name to HovI
-and it will answer you with this tile's index.
+playing *one horror tabletop game*. It should be used with a simple indexing 
+system: just attach small papers to tiles, like in some kind of a file cabinet,
+then add each tile to HovI database, marking it with a corresponding number.
+When game app tells you to get a new tile, just send its name to HovI and it
+will answer you with this tile's index.
 
 HovI is also my self-education project.
 
