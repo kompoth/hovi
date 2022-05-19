@@ -1,6 +1,6 @@
-from configparser import ConfigParser
 from telebot import TeleBot, custom_filters
 from telebot.handler_backends import State, StatesGroup
+from configparser import ConfigParser
 
 from dbhandler import DBHandler, LikeTileError
 
@@ -17,7 +17,6 @@ To save a new tile to my database use these commands:
 config = ConfigParser()
 config.read("config.ini")
 token = config.get("telegram", "token")
-editors = [int(x) for x in config.get("telegram", "editors").split(",")]
 url = config.get("database", "url")
 types = config.get("database", "types").split(",")
 types_str = "".join([f"{i + 1}. {x}\n" for i, x in enumerate(types)])
@@ -44,6 +43,7 @@ def start_cmd(msg):
 @bot.message_handler(commands=["newtile"])
 def newtile_command(msg):
     """Start new tile processing"""
+    editors = [int(x) for x in config.get("telegram", "editors").split(",")]
     if msg.from_user.id not in editors:
         bot.send_message(
             msg.chat.id,
@@ -51,6 +51,7 @@ def newtile_command(msg):
         )
         bot.delete_state(msg.from_user.id, msg.chat.id)
         return
+
     bot.send_message(msg.chat.id, "So let us begin.")
     bot.set_state(msg.from_user.id, NewTileStates.first_side, msg.chat.id)
     bot.send_message(
