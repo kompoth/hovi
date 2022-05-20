@@ -48,16 +48,6 @@ def start_cmd(msg):
 @bot.message_handler(commands=["newtile"])
 def newtile_command(msg):
     """Start new tile processing"""
-    editors = [int(x) for x in config.get("telegram", "editors").split(",")]
-    if msg.from_user.id not in editors:
-        bot.send_message(
-            msg.chat.id,
-            "Sorry, you must be in editors list to add new tiles."
-        )
-        bot.delete_state(msg.from_user.id, msg.chat.id)
-        logging.info(f"Rejected new tile request: {msg.from_user.id}")
-        return
-
     bot.send_message(msg.chat.id, "So let us begin.")
     bot.set_state(msg.from_user.id, NewTileStates.first_side, msg.chat.id)
     bot.send_message(
