@@ -5,6 +5,7 @@ import logging
 
 from dbhandler import DBHandler, LikeTileError
 
+
 HELP_STR = """
 To search a tile in database just send its name to me.
 
