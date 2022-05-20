@@ -16,3 +16,9 @@ HovI is also my self-education project.
 ## Configuration ##
 There is `example-config.ini` file, where Telegram API token must be specified
 as well as a list of telegram ids of users that are allowed to changa database.
+
+## TODO ##
+- Need to rewrite DBHandler:
+  - More than two places for tile
+  - Allow duplicates
+- WTF are those SQLite3 ProgrammingError messages???
