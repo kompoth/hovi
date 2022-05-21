@@ -10,12 +10,9 @@ class Tile(Base):
 
     primary_id = Column(Integer, primary_key=True)
     public_id = Column(Integer, nullable=False)
-    ttype = Column(String)
-    first_side = Column(String)
-    second_side = Column(String)
+    name = Column(String)
+    ftype = Column(String)
+    source = Column(String)
 
     def __repr__(self):
-        return f"[{self.ttype}:{self.public_id}]"
-
-    def __str__(self):
-        return f"{self.__repr__()} {self.first_side}, {self.second_side}"
+        return f"<{self.ftype}:{self.public_id}:{self.name}>"
