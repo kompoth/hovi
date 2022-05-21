@@ -6,6 +6,19 @@ import logging
 from dbhandler import DBHandler
 
 
+HELP_STR = """
+To search tile in database just send me its name.
+
+General commands:
+/help, /start - get this message.
+/add - start processing new piece.
+
+While processing:
+/cancel - cancel processing.
+/done - (when you are asked) stop adding tiles.
+/save - (when you are asked) submit data to database.
+"""
+
 # Setup logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
@@ -49,7 +62,7 @@ class AddStates(StatesGroup):
 def start_cmd(msg):
     """Help message"""
     logging.info(f"{msg.from_user.id} - Displayed help message")
-    bot.send_message(msg.chat.id, "Let me show you thy path")
+    bot.send_message(msg.chat.id, f"Let me show you thy path.\n{HELP_STR}")
 
 
 @bot.message_handler(commands=["add"])
