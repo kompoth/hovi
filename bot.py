@@ -95,10 +95,14 @@ def done_command(msg):
 @bot.message_handler(state=AddStates.checking, commands=["save"])
 def save_command(msg):
     """Save data to database"""
-    with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
-        db.add_tiles(data["names"], data["ftype"], data["source"])
-    bot.send_message(msg.chat.id, "A new path to madness has emerged.")
-    logging.info(f"{msg.from_user.id} - New piece added")
+    if msg.from_user.id in editors:
+        with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
+            db.add_tiles(data["names"], data["ftype"], data["source"])
+        bot.send_message(msg.chat.id, "A new path to madness has emerged.")
+        logging.info(f"{msg.from_user.id} - New piece added")
+    else:
+        bot.send_message(msg.chat.id, "Sorry, you are not in editors list.")
+        logging.info(f"{msg.from_user.id} - Not in editors list")
     bot.delete_state(msg.from_user.id, msg.chat.id)
 
 
