@@ -91,8 +91,7 @@ def done_command(msg):
 def save_command(msg):
     """Save data to database"""
     with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
-        for name in data["names"]:
-            db.add_tile(name, data["ftype"], data["source"])
+        db.add_tiles(data["names"], data["ftype"], data["source"])
     bot.send_message(msg.chat.id, "A new path to madness has emerged.")
     logging.info(f"{msg.from_user.id} - New piece added")
     bot.delete_state(msg.from_user.id, msg.chat.id)

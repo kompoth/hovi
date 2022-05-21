@@ -30,12 +30,13 @@ class DBHandler:
             tiles = session.query(Tile).filter(mask)
         return list(tiles)
 
-    def add_tile(self, name, ftype, source):
+    def add_tiles(self, names, ftype, source):
         """Add tile to database"""
         max_index = self.get_max_index_for_type(ftype)
         index = 1 if max_index is None else max_index + 1
-        tile = Tile(public_id=index, name=name, ftype=ftype,
-                    source=source)
         with Session(self.__engine) as session:
-            session.add(tile)
+            for name in names:
+                tile = Tile(public_id=index, name=name, ftype=ftype,
+                            source=source)
+                session.add(tile)
             session.commit()
