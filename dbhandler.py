@@ -5,8 +5,8 @@ from tables import Tile
 
 
 class DBHandler:
-    def __init__(self, url):
-        self.__engine = create_engine(url,
+    def __init__(self, uri):
+        self.__engine = create_engine(uri,
         # meh this mutes warnings but I don't understand it ...
                         connect_args={"check_same_thread": False})
         if not inspect(self.__engine).has_table("periods"):
@@ -32,6 +32,8 @@ class DBHandler:
 
     def add_tiles(self, names, ftype, source):
         """Add tile to database"""
+        if isinstance(names, str):
+            names = [names]
         max_index = self.get_max_index_for_type(ftype)
         index = 1 if max_index is None else max_index + 1
         with Session(self.__engine) as session:

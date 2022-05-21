@@ -18,11 +18,9 @@ There is `example-config.ini` file, where Telegram API token must be specified
 as well as a list of telegram ids of users that are allowed to changa database.
 
 ## TODO ##
-- Search strings processing:
-  - Make case insensitive
-  - Substring search (e.g. "corridor" gives "Corridor 2")
-- Edit functions:
-  - Add new sources and ftypes on flight, without restarting and editing config
-  - Command to delete all tiles of some index
-  - Command to edit saved tile name
+- Add new commands:
+  - add to/delete from editors list
+  - edit and delete tiles
+- Make search case insensitive. Currently I use SQLite3, for which non-ASCII synbols
+can't be `lower()`ed (see [[https://www.sqlite.org/faq.html#q18|here]]).
 - WTF are those SQLite3 ProgrammingError messages???
