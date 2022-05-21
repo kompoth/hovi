@@ -28,7 +28,7 @@ config.read("config.ini")
 
 # Initialize bot and database
 bot = TeleBot(config.get("telegram", "token"))
-db = DBHandler(config.get("database", "url"))
+db = DBHandler(config.get("database", "uri"))
 
 # Preload lists
 editors = [int(x) for x in config.get("telegram", "editors").split(",")]
