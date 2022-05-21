@@ -17,18 +17,23 @@ config.read("config.ini")
 bot = TeleBot(config.get("telegram", "token"))
 db = DBHandler(config.get("database", "url"))
 
-# Preload ftypes and sources
+# Preload lists
+editors = [int(x) for x in config.get("telegram", "editors").split(",")]
 ftypes = config.get("database", "ftypes").split(",")
 ftypes_str = "".join([f"{i + 1}. {x}\n" for i, x in enumerate(ftypes)])
 sources = config.get("database", "sources").split(",")
 sources_str = "".join([f"{i + 1}. {x}\n" for i, x in enumerate(sources)])
 
 
-def user_choice(ch, ops):
-    if ch in ops:
-        return ch
-    elif ch.isdigit() and 1 <= int(ch) <= len(ops):
-        return ops[int(ch) - 1]
+def user_choice(msg, ops):
+    """Checks user input"""
+    choice = msg.text
+    if choice in ops:
+        return choice
+    elif choice.isdigit() and 1 <= int(choice) <= len(ops):
+        return ops[int(choice) - 1]
+    bot.send_message(msg.chat.id, "Please choose one of available options.")
+    logging.info(f"{msg.from_user.id} - Bad option '{choice}'")
     return None
 
 
@@ -100,10 +105,8 @@ def save_command(msg):
 @bot.message_handler(state=AddStates.source)
 def source_state(msg):
     """Handle source and ask for ftype"""
-    source = user_choice(msg.text, sources)
+    source = user_choice(msg, sources)
     if source is None:
-        bot.send_message(msg.chat.id, "Please choose from the above list.")
-        logging.info(f"{msg.from_user.id} - Bad source '{msg.text}'")
         return
     with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
         data["source"] = source
@@ -119,10 +122,8 @@ def source_state(msg):
 @bot.message_handler(state=AddStates.ftype)
 def ftype_state(msg):
     """Handle ftype and ask for tile names"""
-    ftype = user_choice(msg.text, ftypes)
+    ftype = user_choice(msg, ftypes)
     if ftype is None:
-        bot.send_message(msg.chat.id, "Please choose from the above list.")
-        logging.info(f"{msg.from_user.id} - Bad ftype '{msg.text}'")
         return
     with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
         data["ftype"] = ftype
