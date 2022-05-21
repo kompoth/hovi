@@ -18,7 +18,11 @@ There is `example-config.ini` file, where Telegram API token must be specified
 as well as a list of telegram ids of users that are allowed to changa database.
 
 ## TODO ##
-- Need to rewrite DBHandler:
-  - More than two places for tile
-  - Allow duplicates
+- Search strings processing:
+  - Make case insensitive
+  - Substring search (e.g. "corridor" gives "Corridor 2")
+- Edit functions:
+  - Add new sources and ftypes on flight, without restarting and editing config
+  - Command to delete all tiles of some index
+  - Command to edit saved tile name
 - WTF are those SQLite3 ProgrammingError messages???
