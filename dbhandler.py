@@ -27,7 +27,7 @@ class DBHandler:
         mask = mask if source is None else and_(mask, Tile.source == source)
         tiles = []
         with Session(self.__engine) as session:
-            tiles = session.query(Tile).filter(mask)
+            tiles = session.query(Tile).filter(mask).order_by(Tile.public_id)
         fancy_list = []
         for tile in tiles:
             fancy = f"*{tile.public_id}.* {tile.name.capitalize()} " + \
