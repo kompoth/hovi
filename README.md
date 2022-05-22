@@ -21,6 +21,4 @@ as well as a list of telegram ids of users that are allowed to changa database.
 - Add new commands:
   - add to/delete from editors list
   - edit and delete tiles
-- Make search case insensitive. Currently I use SQLite3, for which non-ASCII synbols
-can't be `lower()`ed (see [[https://www.sqlite.org/faq.html#q18|here]]).
 - WTF are those SQLite3 ProgrammingError messages???
