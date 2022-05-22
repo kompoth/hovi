@@ -22,7 +22,7 @@ class DBHandler:
 
     def search(self, name, ftype=None, source=None):
         """Return fancy list of tiles with given properties"""
-        mask = Tile.name == name.lower()
+        mask = Tile.name.contains(name.lower())
         mask = mask if ftype is None else and_(mask, Tile.ftype == ftype)
         mask = mask if source is None else and_(mask, Tile.source == source)
         tiles = []
