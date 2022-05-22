@@ -7,7 +7,7 @@ from dbhandler import DBHandler
 
 
 HELP_STR = """
-To search tile in database just send me its name.
+To search for tile in database just send me its name.
 
 General commands:
 /help, /start - get this message.
@@ -62,7 +62,7 @@ class AddStates(StatesGroup):
 def start_cmd(msg):
     """Help message"""
     logging.info(f"{msg.from_user.id} - Displayed help message")
-    bot.send_message(msg.chat.id, f"Let me show you thy path.\n{HELP_STR}")
+    bot.send_message(msg.chat.id, f"Let me show thy path.\n{HELP_STR}")
 
 
 @bot.message_handler(commands=["add"])
