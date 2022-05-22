@@ -20,25 +20,30 @@ class DBHandler:
             res = max_ids_query.filter(Tile.ftype == ftype).scalar()
         return res
 
-    def get_tile(self, name, ftype=None, source=None):
-        """Return list of tiles with given properties"""
-        mask = Tile.name == name
+    def search(self, name, ftype=None, source=None):
+        """Return fancy list of tiles with given properties"""
+        mask = Tile.name == name.lower()
         mask = mask if ftype is None else and_(mask, Tile.ftype == ftype)
         mask = mask if source is None else and_(mask, Tile.source == source)
         tiles = []
         with Session(self.__engine) as session:
             tiles = session.query(Tile).filter(mask)
-        return list(tiles)
+        fancy_list = []
+        for tile in tiles:
+            fancy = f"*{tile.public_id}.* {tile.name.capitalize()} " + \
+                    f"({tile.ftype}, {tile.source})"
+            fancy_list.append(fancy)
+        return fancy_list
 
     def add_tiles(self, names, ftype, source):
-        """Add tile to database"""
+        """Add list of tiles to database"""
         if isinstance(names, str):
             names = [names]
         max_index = self.get_max_index_for_type(ftype)
         index = 1 if max_index is None else max_index + 1
         with Session(self.__engine) as session:
             for name in names:
-                tile = Tile(public_id=index, name=name, ftype=ftype,
-                            source=source)
+                tile = Tile(public_id=index, name=name.lower(),
+                            ftype=ftype, source=source)
                 session.add(tile)
             session.commit()

@@ -168,13 +168,14 @@ def names_state(msg):
 @bot.message_handler(state=None)
 def search_command(msg):
     """For stateless messages look up string in database"""
-    results = db.get_tile(msg.text)
+    results = db.search(msg.text)
     if not len(results):
         bot.send_message(msg.chat.id, f"Can't find '{msg.text}' tile.")
         logging.info(f"{msg.from_user.id} - Failed search")
         return
     results_str = "".join([f"{x}\n" for x in results])
-    bot.send_message(msg.chat.id, "Search results:\n" + results_str)
+    bot.send_message(msg.chat.id, "Search results:\n" + results_str,
+                     parse_mode="Markdown")
     logging.info(f"{msg.from_user.id} - Successful search")
 
 
