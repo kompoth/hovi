@@ -23,4 +23,5 @@ as well as a list of telegram ids of users that are allowed to changa database.
 - Add new commands:
   - add to/delete from editors list
   - edit and delete tiles
+- Save tile scans to database
 - WTF are those SQLite3 ProgrammingError messages???
