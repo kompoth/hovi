@@ -30,8 +30,8 @@ class DBHandler:
             tiles = session.query(Tile).filter(mask).order_by(Tile.public_id)
         fancy_list = []
         for tile in tiles:
-            fancy = f"*{tile.public_id}.* {tile.name.capitalize()} " + \
-                    f"({tile.ftype}, {tile.source})"
+            fancy = f"*{tile.ftype}-{tile.public_id}.* " + \
+                    f"{tile.name.capitalize()} ({tile.source})"
             fancy_list.append(fancy)
         return fancy_list
 

@@ -1,11 +1,13 @@
 from telebot import TeleBot, custom_filters
 from telebot.handler_backends import State, StatesGroup
 from configparser import ConfigParser
+import os
 import logging
 
 from dbhandler import DBHandler
 
 
+CURPATH = os.path.dirname(os.path.realpath(__file__))
 HELP_STR = """
 To search for tile in database just send me its name.
 
@@ -24,11 +26,15 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 # Read config
 config = ConfigParser()
-config.read("config.ini")
+config_path = os.path.join(CURPATH, "config.ini")
+logging.info(f"Using config '{config_path}'")
+config.read(config_path)
 
 # Initialize bot and database
 bot = TeleBot(config.get("telegram", "token"))
-db = DBHandler(config.get("database", "uri"))
+db_path = os.path.join(CURPATH, "db.sqlite")
+logging.info(f"Using database '{db_path}'")
+db = DBHandler(f"sqlite:///{db_path}")
 
 # Preload lists
 editors = [int(x) for x in config.get("telegram", "editors").split(",")]
