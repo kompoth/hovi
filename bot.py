@@ -179,5 +179,6 @@ def search_command(msg):
     logging.info(f"{msg.from_user.id} - Successful search")
 
 
+logging.info(f"Starting bot")
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 bot.infinity_polling()

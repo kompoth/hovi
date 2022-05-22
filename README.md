@@ -18,6 +18,8 @@ There is `example-config.ini` file, where Telegram API token must be specified
 as well as a list of telegram ids of users that are allowed to changa database.
 
 ## TODO ##
+- Move bot stuff to separate module
+- Create separate directory for python modules 
 - Add new commands:
   - add to/delete from editors list
   - edit and delete tiles
