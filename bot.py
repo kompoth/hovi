@@ -1,13 +1,11 @@
 from telebot import TeleBot, custom_filters
 from telebot.handler_backends import State, StatesGroup
 from configparser import ConfigParser
-import os
 import logging
 
 from dbhandler import DBHandler
+import utils
 
-
-CURPATH = os.path.dirname(os.path.realpath(__file__))
 HELP_STR = """
 To search for tile in database just send me its name.
 
@@ -24,23 +22,16 @@ While processing:
 # Setup logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
-# Read config
-config = ConfigParser()
-config_path = os.path.join(CURPATH, "config.ini")
-logging.info(f"Using config '{config_path}'")
-config.read(config_path)
-
 # Initialize bot and database
-bot = TeleBot(config.get("telegram", "token"))
-db_path = os.path.join(CURPATH, "db.sqlite")
-logging.info(f"Using database '{db_path}'")
-db = DBHandler(f"sqlite:///{db_path}")
+bot = TeleBot(utils.str_opt("telegram", "token"))
+logging.info(f"Using database '{utils.DBPATH}'")
+db = DBHandler(f"sqlite:///{utils.DBPATH}")
 
 # Preload lists
-editors = [int(x) for x in config.get("telegram", "editors").split(",")]
-ftypes = config.get("database", "ftypes").split(",")
+editors = [int(x) for x in utils.str_opt("telegram", "editors").split(",")]
+ftypes = utils.str_opt("database", "ftypes").split(",")
 ftypes_str = "".join([f"{i + 1}. {x}\n" for i, x in enumerate(ftypes)])
-sources = config.get("database", "sources").split(",")
+sources = utils.str_opt("database", "sources").split(",")
 sources_str = "".join([f"{i + 1}. {x}\n" for i, x in enumerate(sources)])
 
 
