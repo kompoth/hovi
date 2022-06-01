@@ -31,7 +31,7 @@ Both *ftypes* and *sources* lists are very important, especially if there are
 tiles with equal names from different sets.
 
 ## Usage ##
-Currently it is very simple: just configure bot and run it with
+In the simpliest case just configure bot and run it with
 ```
 python bot.py
 ```
