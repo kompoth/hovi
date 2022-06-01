@@ -8,6 +8,7 @@ To search for tile in database just send me its name.
 General commands:
 /help, /start - get this message.
 /add - start processing new piece.
+/list - list all saved piece.
 
 While processing:
 /cancel - cancel processing.

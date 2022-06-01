@@ -1,23 +1,12 @@
 from telebot import TeleBot, custom_filters
 from telebot.handler_backends import State, StatesGroup
+#from telebot.apihelper import ApiHTTPException, ApiTelegramException
 from configparser import ConfigParser
 import logging
 
 from dbhandler import DBHandler
-from utils import get_str, get_arr, list2enum
+from utils import get_str, get_arr, list2enum, HELP_STR
 
-HELP_STR = """
-To search for tile in database just send me its name.
-
-General commands:
-/help, /start - get this message.
-/add - start processing new piece.
-
-While processing:
-/cancel - cancel processing.
-/done - (when you are asked) stop adding tiles.
-/save - (when you are asked) submit data to database.
-"""
 
 # Setup logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -51,7 +40,6 @@ def user_choice(msg, ops):
 def send_long_msg(chat_id, text):
     """Send a message that might be too long"""
     bot.send_message(chat_id, text, parse_mode="Markdown")
-
 
 @bot.message_handler(commands=["start", "help"])
 def start_cmd(msg):
