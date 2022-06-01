@@ -1,16 +1,24 @@
 from sqlalchemy import create_engine, inspect, func, and_
 from sqlalchemy.orm import Session
+import logging
 
 from tables import Tile
+from utils import DBPATH
 
 
 class DBHandler:
-    def __init__(self, uri):
-        self.__engine = create_engine(uri,
+    __uri = f"sqlite:///{DBPATH}"
+
+    def __init__(self):
+        self.__engine = create_engine(self.__uri,
         # meh this mutes warnings but I don't understand it ...
                         connect_args={"check_same_thread": False})
         if not inspect(self.__engine).has_table("periods"):
             Tile.metadata.create_all(self.__engine)
+
+    @property
+    def uri(self):
+        return self.__uri
 
     def get_max_index_for_type(self, ftype):
         """Get greatest index for tiles of given form type"""

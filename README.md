@@ -14,8 +14,21 @@ Hovi is also my self-education project.
 - SQLAlchemy
 
 ## Configuration ##
-Put `config.ini` near `bot.py` script with bot configuration variables. Use
-`example-config.ini` as a reference. 
+Put `config.ini` near `bot.py` script with following values:
+```
+[telegram]
+token = <telegram API token>
+editors = <list of ids of users allowed to change data>
+
+[database]
+ftypes = corridor,square,hall
+sources = base
+```
+*ftypes* are types of tiles that you have. You can use any classification
+you like, for example form factors.
+*sources* are names of game sets and extensions you are using.
+Both *ftypes* and *sources* lists are very important, especially if there are
+tiles with equal names from different sets.
 
 ## Usage ##
 Currently it is very simple: just configure bot and run it with
@@ -25,8 +38,6 @@ python bot.py
 You will see live log then.
 
 ## TODO ##
-- Move config to utils module to make it easily accessable from any module
-- Move bot stuff to a separate module
 - Create a separate directory for python modules 
 - Add some new commands:
   - add to/delete from editors list

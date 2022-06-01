@@ -4,7 +4,7 @@ from configparser import ConfigParser
 import logging
 
 from dbhandler import DBHandler
-from utils import DBPATH, get_str, get_arr, list2enum
+from utils import get_str, get_arr, list2enum
 
 HELP_STR = """
 To search for tile in database just send me its name.
@@ -23,21 +23,9 @@ While processing:
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 # Initialize bot and database
-logging.info(f"Using database '{DBPATH}'")
 bot = TeleBot(get_str("telegram", "token"))
-db = DBHandler(f"sqlite:///{DBPATH}")
-
-
-def user_choice(msg, ops):
-    """Checks user input"""
-    choice = msg.text
-    if choice in ops:
-        return choice
-    elif choice.isdigit() and 1 <= int(choice) <= len(ops):
-        return ops[int(choice) - 1]
-    bot.send_message(msg.chat.id, "Please choose one of available options.")
-    logging.info(f"{msg.from_user.id} - Bad option '{choice}'")
-    return None
+db = DBHandler()
+logging.info(f"Using database '{db.uri}'")
 
 
 class AddStates(StatesGroup):
@@ -46,6 +34,18 @@ class AddStates(StatesGroup):
     ftype = State()
     names = State()
     checking = State()
+
+
+def user_choice(msg, ops):
+    """Check user input"""
+    choice = msg.text
+    if choice in ops:
+        return choice
+    elif choice.isdigit() and 1 <= int(choice) <= len(ops):
+        return ops[int(choice) - 1]
+    bot.send_message(msg.chat.id, "Please choose one of available options.")
+    logging.info(f"{msg.from_user.id} - Bad option '{choice}'")
+    return None
 
 
 @bot.message_handler(commands=["start", "help"])
