@@ -6,11 +6,17 @@ CFGPATH = os.path.join(BOTPATH, "config.ini")
 DBPATH = os.path.join(BOTPATH, "db.sqlite")
 
 
-def str_opt(*args):
+def get_str(*args):
     """Get string value from configuration file"""
     config = ConfigParser()
     config.read(CFGPATH)
     return config.get(*args)
+
+
+def get_arr(*args):
+    """Get array from configuration file"""
+    value = get_str(*args)
+    return value.split(",")
 
 
 def list2enum(arr: list):

@@ -4,7 +4,7 @@ from configparser import ConfigParser
 import logging
 
 from dbhandler import DBHandler
-import utils
+from utils import DBPATH, get_str, get_arr, list2enum
 
 HELP_STR = """
 To search for tile in database just send me its name.
@@ -23,19 +23,9 @@ While processing:
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 # Initialize bot and database
-logging.info(f"Using config '{utils.CFGPATH}'")
-logging.info(f"Using database '{utils.DBPATH}'")
-bot = TeleBot(utils.str_opt("telegram", "token"))
-db = DBHandler(f"sqlite:///{utils.DBPATH}")
-
-# Preload lists
-editors = [int(x) for x in utils.str_opt("telegram", "editors").split(",")]
-ftypes = utils.str_opt("database", "ftypes").split(",")
-ftypes_str = utils.list2enum(ftypes)
-logging.info(f"Using ftypes:\n{ftypes_str}")
-sources = utils.str_opt("database", "sources").split(",")
-sources_str = utils.list2enum(sources)
-logging.info(f"Using sources:\n{sources_str}")
+logging.info(f"Using database '{DBPATH}'")
+bot = TeleBot(get_str("telegram", "token"))
+db = DBHandler(f"sqlite:///{DBPATH}")
 
 
 def user_choice(msg, ops):
@@ -70,8 +60,9 @@ def add_command(msg):
     """Start adding new piece and ask for source"""
     bot.set_state(msg.from_user.id, AddStates.source, msg.chat.id)
     logging.info(f"{msg.from_user.id} - Adding new piece")
+    sources_str = list2enum(get_arr("database", "sources"))
     bot.send_message(msg.chat.id,
-        "Which set is this piece from?"
+        "Which set is this piece from? "
         f"Available options are:\n{sources_str}")
 
 
@@ -108,6 +99,7 @@ def done_command(msg):
 @bot.message_handler(state=AddStates.checking, commands=["save"])
 def save_command(msg):
     """Save data to database"""
+    editors = [int(x) for x in get_arr("telegram", "editors")]
     if msg.from_user.id in editors:
         with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
             db.add_tiles(data["names"], data["ftype"], data["source"])
@@ -122,13 +114,14 @@ def save_command(msg):
 @bot.message_handler(state=AddStates.source)
 def source_state(msg):
     """Handle source and ask for ftype"""
-    source = user_choice(msg, sources)
+    source = user_choice(msg, get_arr("database", "sources"))
     if source is None:
         return
     with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
         data["source"] = source
     logging.info(f"{msg.from_user.id} - Recorded source '{source}'")
-
+    
+    ftypes_str = list2enum(get_arr("database", "ftypes"))
     bot.send_message(
         msg.chat.id,
         f"Now specify piece form type. Available options are:\n{ftypes_str}"
@@ -139,7 +132,7 @@ def source_state(msg):
 @bot.message_handler(state=AddStates.ftype)
 def ftype_state(msg):
     """Handle ftype and ask for tile names"""
-    ftype = user_choice(msg, ftypes)
+    ftype = user_choice(msg, get_arr("database", "ftypes"))
     if ftype is None:
         return
     with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
