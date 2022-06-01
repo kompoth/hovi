@@ -5,7 +5,7 @@ from configparser import ConfigParser
 import logging
 
 from dbhandler import DBHandler
-from utils import get_str, get_arr, list2enum, HELP_STR
+from utils import get_str, get_arr, list2enum, user_choice, HELP_STR
 
 
 # Setup logging
@@ -25,20 +25,11 @@ class AddStates(StatesGroup):
     checking = State()
 
 
-def user_choice(msg, ops):
-    """Check user input"""
-    choice = msg.text
-    if choice in ops:
-        return choice
-    elif choice.isdigit() and 1 <= int(choice) <= len(ops):
-        return ops[int(choice) - 1]
-    bot.send_message(msg.chat.id, "Please choose one of available options.")
-    logging.info(f"{msg.from_user.id} - Bad option '{choice}'")
-    return None
-
-
 def send_long_msg(chat_id, text):
     """Send a message that might be too long"""
+    #MAXLEN = 4096
+    #while len(text) > 0:
+    #    next_eol = text[:MAXLEN].rfind('\n')
     bot.send_message(chat_id, text, parse_mode="Markdown")
 
 @bot.message_handler(commands=["start", "help"])
@@ -92,8 +83,10 @@ def done_command(msg):
 @bot.message_handler(state=AddStates.source)
 def source_state(msg):
     """Handle source and ask for ftype"""
-    source = user_choice(msg, get_arr("database", "sources"))
+    source = user_choice(msg.text, get_arr("database", "sources"))
     if source is None:
+        bot.send_message(msg.chat.id, "Please choose one of available options.")
+        logging.info(f"{msg.from_user.id} - Bad source '{msg.text}'")
         return
     with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
         data["source"] = source
@@ -110,8 +103,10 @@ def source_state(msg):
 @bot.message_handler(state=AddStates.ftype)
 def ftype_state(msg):
     """Handle ftype and ask for tile names"""
-    ftype = user_choice(msg, get_arr("database", "ftypes"))
+    ftype = user_choice(msg.text, get_arr("database", "ftypes"))
     if ftype is None:
+        bot.send_message(msg.chat.id, "Please choose one of available options.")
+        logging.info(f"{msg.from_user.id} - Bad ftype '{msg.text}'")
         return
     with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
         data["ftype"] = ftype

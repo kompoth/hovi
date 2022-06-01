@@ -37,3 +37,14 @@ def list2enum(arr: list):
     """Create an enumeration from a list"""
     str_list = [f"{i + 1}. {x}" for i, x in enumerate(arr)]
     return "\n".join(str_list)
+
+
+def user_choice(choice, ops):
+    """Check user input"""
+    if choice in ops:
+        return choice
+    elif choice.isdigit() and 1 <= int(choice) <= len(ops):
+        return ops[int(choice) - 1]
+    return None
+
+
