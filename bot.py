@@ -23,16 +23,19 @@ While processing:
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 # Initialize bot and database
-bot = TeleBot(utils.str_opt("telegram", "token"))
+logging.info(f"Using config '{utils.CFGPATH}'")
 logging.info(f"Using database '{utils.DBPATH}'")
+bot = TeleBot(utils.str_opt("telegram", "token"))
 db = DBHandler(f"sqlite:///{utils.DBPATH}")
 
 # Preload lists
 editors = [int(x) for x in utils.str_opt("telegram", "editors").split(",")]
 ftypes = utils.str_opt("database", "ftypes").split(",")
-ftypes_str = "".join([f"{i + 1}. {x}\n" for i, x in enumerate(ftypes)])
+ftypes_str = utils.list2enum(ftypes)
+logging.info(f"Using ftypes:\n{ftypes_str}")
 sources = utils.str_opt("database", "sources").split(",")
-sources_str = "".join([f"{i + 1}. {x}\n" for i, x in enumerate(sources)])
+sources_str = utils.list2enum(sources)
+logging.info(f"Using sources:\n{sources_str}")
 
 
 def user_choice(msg, ops):
