@@ -27,10 +27,20 @@ class AddStates(StatesGroup):
 
 def send_long_msg(chat_id, text):
     """Send a message that might be too long"""
-    #MAXLEN = 4096
-    #while len(text) > 0:
-    #    next_eol = text[:MAXLEN].rfind('\n')
-    bot.send_message(chat_id, text, parse_mode="Markdown")
+    MAXLEN = 4096
+    parts = []
+    while len(text) > 0:
+        if len(text) > MAXLEN:
+            next_eol = text[:MAXLEN].rfind('\n')
+            next_eol = MAXLEN if next_eol < 0 else next_eol
+            parts.append(text[:next_eol])
+            text = text[next_eol:]
+        else:
+            parts.append(text)
+            break
+    for part in parts:
+        bot.send_message(chat_id, parts, parse_mode="Markdown")
+
 
 @bot.message_handler(commands=["start", "help"])
 def start_cmd(msg):
