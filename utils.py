@@ -34,5 +34,5 @@ def get_arr(*args):
 
 def list2enum(arr: list):
     """Create an enumeration from a list"""
-    str_list = [f"{i + 1}. {x}\n" for i, x in enumerate(arr)]
-    return "".join(str_list)
+    str_list = [f"{i + 1}. {x}" for i, x in enumerate(arr)]
+    return "\n".join(str_list)

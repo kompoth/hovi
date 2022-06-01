@@ -38,6 +38,7 @@ python bot.py
 You will see live log then.
 
 ## TODO ##
+- Handle long messages
 - Create a separate directory for python modules 
 - Add some new commands:
   - add to/delete from editors list

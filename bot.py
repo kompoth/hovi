@@ -48,6 +48,11 @@ def user_choice(msg, ops):
     return None
 
 
+def send_long_msg(chat_id, text):
+    """Send a message that might be too long"""
+    bot.send_message(chat_id, text, parse_mode="Markdown")
+
+
 @bot.message_handler(commands=["start", "help"])
 def start_cmd(msg):
     """Help message"""
@@ -94,21 +99,6 @@ def done_command(msg):
                      parse_mode="Markdown")
     bot.set_state(msg.from_user.id, AddStates.checking, msg.chat.id)
     logging.info(f"{msg.from_user.id} - Checking data")
-
-
-@bot.message_handler(state=AddStates.checking, commands=["save"])
-def save_command(msg):
-    """Save data to database"""
-    editors = [int(x) for x in get_arr("telegram", "editors")]
-    if msg.from_user.id in editors:
-        with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
-            db.add_tiles(data["names"], data["ftype"], data["source"])
-        bot.send_message(msg.chat.id, "A new path to madness has emerged.")
-        logging.info(f"{msg.from_user.id} - New piece added")
-    else:
-        bot.send_message(msg.chat.id, "Sorry, you are not in editors list.")
-        logging.info(f"{msg.from_user.id} - Not in editors list")
-    bot.delete_state(msg.from_user.id, msg.chat.id)
 
 
 @bot.message_handler(state=AddStates.source)
@@ -158,17 +148,39 @@ def names_state(msg):
     logging.info(f"{msg.from_user.id} - Recorded name '{msg.text}'")
 
 
+@bot.message_handler(state=AddStates.checking, commands=["save"])
+def save_command(msg):
+    """Save data to database"""
+    editors = [int(x) for x in get_arr("telegram", "editors")]
+    if msg.from_user.id in editors:
+        with bot.retrieve_data(msg.from_user.id, msg.chat.id) as data:
+            db.add_tiles(data["names"], data["ftype"], data["source"])
+        bot.send_message(msg.chat.id, "A new path to madness has emerged.")
+        logging.info(f"{msg.from_user.id} - New piece added")
+    else:
+        bot.send_message(msg.chat.id, "Sorry, you are not in editors list.")
+        logging.info(f"{msg.from_user.id} - Not in editors list")
+    bot.delete_state(msg.from_user.id, msg.chat.id)
+
+
+@bot.message_handler(commands=["list"])
+def list_cmd(msg):
+    """List all pieces in a database"""
+    for ftype in get_arr("database", "ftypes"):
+        results = db.list_pieces(ftype)
+        send_long_msg(msg.chat.id, results)
+    logging.info(f"{msg.from_user.id} - Listed all pieces")
+
+
 @bot.message_handler(state=None)
 def search_command(msg):
     """For stateless messages look up string in database"""
-    results = db.search(msg.text)
+    results = db.find_tiles(msg.text)
     if not len(results):
         bot.send_message(msg.chat.id, f"Can't find '{msg.text}' tile.")
         logging.info(f"{msg.from_user.id} - Failed search")
         return
-    results_str = "".join([f"{x}\n" for x in results])
-    bot.send_message(msg.chat.id, "Search results:\n" + results_str,
-                     parse_mode="Markdown")
+    send_long_msg(msg.chat.id, results)
     logging.info(f"{msg.from_user.id} - Successful search")
 
 
